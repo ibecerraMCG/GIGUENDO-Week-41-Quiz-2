@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 41 Practice Quiz 2</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }
+
+        [data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+            #reveal-all-container { justify-content: flex-start !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 41 Practice Quiz 2</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Nephritic Syndrome ---
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO1: Define nephritic syndrome.",
+                question: "A 25-year-old man presents to the clinic with sudden onset of dark, tea-colored urine and mild swelling around his eyes. His blood pressure is 150/95 mm Hg. A 24-hour urine collection reveals 1.5 g of protein. Which of the following underlying processes best defines the broad category of this patient's glomerular disease?",
+                options: {
+                    A: "Autoimmune destruction of the renal tubules",
+                    B: "Deposition of amyloid fibrils in the mesangium",
+                    C: "Inflammatory process of the glomerulus",
+                    D: "Ischemic necrosis of the renal papillae",
+                    E: "Noninflammatory podocyte effacement"
+                },
+                correctAnswer: "C",
+                rationale: "Nephritic syndrome (glomerulonephritis) is fundamentally defined as an inflammatory process, in contrast to nephrotic syndrome, which is a noninflammatory process. It is characterized by active urine sediment and sub-nephrotic proteinuria.",
+                source: "Nephritic Syndrome PDF, slide 45: '1) Nephritic Syndrome (Glomerulonephritis) • Inflammatory process'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO1: Define nephritic syndrome.",
+                question: "A 35-year-old woman is being evaluated for new-onset hypertension and hematuria. Her urinalysis shows dysmorphic red blood cells. To definitively classify her presentation as a nephritic syndrome rather than a nephrotic syndrome, her 24-hour urinary protein excretion should typically fall below which of the following thresholds?",
+                options: {
+                    A: "1.0 g/day",
+                    B: "2.0 g/day",
+                    C: "3.5 g/day",
+                    D: "5.0 g/day",
+                    E: "10.0 g/day"
+                },
+                correctAnswer: "C",
+                rationale: "Nephritic syndrome is characterized by variable, sub-nephrotic proteinuria, which is typically < 3.5 g/day . Nephrotic syndrome is defined by heavy proteinuria > 3.5 g/day .",
+                source: "Nephritic Syndrome PDF, slide 45: 'Nephritic Syndrome • Proteinuria < 3.5 g/day – variable'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO2: Describe the clinical presentation of nephritic syndrome.",
+                question: "A 40-year-old man presents to the emergency department with a 3-day history of grossly bloody urine and decreased urine output. His blood pressure is markedly elevated. Urinalysis reveals numerous red blood cells. Which of the following formed elements in the urine sediment is most classically associated with this patient's clinical presentation?",
+                options: {
+                    A: "Calcium oxalate crystals",
+                    B: "Fatty casts",
+                    C: "Hyaline casts",
+                    D: "RBC casts",
+                    E: "White blood cell casts"
+                },
+                correctAnswer: "D",
+                rationale: "The clinical presentation of acute nephritic syndrome includes the acute onset of hematuria, mild/moderate proteinuria, hypertension, decreased GFR, and an active urine sediment that classically features RBCs and RBC casts.",
+                source: "Nephritic Syndrome PDF, slides 44 & 45: 'Acute Nephritic Syndrome • Acute onset of hematuria, mild/moderate proteinuria, hypertension, and decreased GFR.' and 'Active urine sediment: RBCs +/- WBCs +/- RBC Casts'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO2: Describe the clinical presentation of nephritic syndrome.",
+                question: "A 65-year-old woman presents with severe fatigue and progressive swelling over the past two weeks. Her serum creatinine has rapidly increased from 1.0 mg/dL to 4.5 mg/dL during this short period. Urinalysis shows hematuria and proteinuria. A renal biopsy is performed. Which of the following is the most likely pathological finding explaining this specific, rapid clinical progression?",
+                options: {
+                    A: "Diffuse thickening of the glomerular basement membrane",
+                    B: "Extensive crescent formation inside Bowman's capsule",
+                    C: "Kimmelstiel-Wilson nodules",
+                    D: "Massive deposition of amyloid",
+                    E: "Uniform effacement of podocyte foot processes"
+                },
+                correctAnswer: "B",
+                rationale: "Rapidly Progressive Glomerulonephritis (RPGN) presents with a progressive loss of GFR over a short period (days, weeks, or months). This clinical presentation is typically accompanied by the histological finding of extensive crescent formation inside Bowman's capsule.",
+                source: "Nephritic Syndrome PDF, slide 44: 'Rapidly Progressive Glomerulonephritis • Group of nephritic syndromes with progressive loss of GFR over short period of time (days, weeks, or months). Typically with extensive crescent formation.'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO3: Describe how the urinalysis, urine microscopy, and the renal biopsy is useful in the diagnosis of nephritic syndromes.",
+                question: "A 28-year-old man is referred to a nephrologist for evaluation of asymptomatic hematuria. The physician emphasizes that identifying the source of the bleeding is critical. Which of the following findings on urine microscopy would most strongly suggest that the hematuria is specifically of glomerular (renal) origin?",
+                options: {
+                    A: "Abundant squamous epithelial cells",
+                    B: "Dysmorphic RBCs",
+                    C: "Numerous neutrophils",
+                    D: "Oval fat bodies",
+                    E: "Transitional epithelial cells"
+                },
+                correctAnswer: "B",
+                rationale: "The presence of dysmorphic RBCs (and RBC casts) on urine microscopy strongly points to a glomerular origin for the hematuria, indicating a nephritic process rather than lower urinary tract bleeding.",
+                source: "Nephritic Syndrome PDF, slide 4: 'Asymptomatic • Proteinuria < 2 g/day , Microscopic hematuria, Dysmorphic RBCs'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO3: Describe how the urinalysis, urine microscopy, and the renal biopsy is useful in the diagnosis of nephritic syndromes.",
+                question: "A patient with suspected microscopic polyangiitis undergoes a renal biopsy. The nephropathologist examines the tissue under light microscopy to assess how the glomerulus has reacted to the injury. Which of the following morphologic changes is a hallmark of a nephritic (glomerulonephritis) process rather than a purely nephrotic one?",
+                options: {
+                    A: "Amyloid fibril deposition",
+                    B: "Basement membrane thickening without proliferation",
+                    C: "Hyalinization of the afferent arteriole",
+                    D: "Hypercellularity",
+                    E: "Podocyte effacement"
+                },
+                correctAnswer: "D",
+                rationale: "The glomerulus reacts to injury in limited ways. Hypercellularity (cellular proliferation, leukocyte infiltration, formation of crescents) is the histological hallmark of glomerulonephritis (nephritic syndrome).",
+                source: "Nephritic Syndrome PDF, slide 25: 'The glomerulus reacts to injury in a limited number of ways: 1. Hypercellularity (glomerulonephritis) Cellular proliferation, Leukocyte infiltration, Formation of crescents'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO4: List the common causes of the nephritic syndrome.",
+                question: "A 45-year-old man presents with acute nephritic syndrome. Serologic testing reveals normal complement levels (C3 and C4) and positive testing for anti-neutrophil cytoplasmic antibodies (ANCA). Based on the complement profile, which of the following is the most likely cause of his glomerulonephritis?",
+                options: {
+                    A: "Cryoglobulinemia",
+                    B: "IgA nephropathy",
+                    C: "Lupus nephritis",
+                    D: "Microscopic polyangiitis",
+                    E: "Post-streptococcal glomerulonephritis"
+                },
+                correctAnswer: "D",
+                rationale: "Microscopic polyangiitis is an ANCA-associated vasculitis. In the classification of glomerulonephritis according to complement, ANCA-associated vasculitides present with normal complement levels, distinguishing them from immune-complex mediated causes (like Lupus or cryoglobulinemia) which present with low complement.",
+                source: "Nephritic Syndrome PDF, slide 49: 'Classification of GN According to Complement... Normal: Renal-limited vasculitis (ANCA+)... -Microscopic polyangiitis'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO4: List the common causes of the nephritic syndrome.",
+                question: "A 12-year-old boy presents with gross hematuria and sensorineural hearing loss. His family history is significant for an uncle who required a kidney transplant in his 30s. A genetic defect affecting the glomerular basement membrane is suspected. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Alport syndrome",
+                    B: "Fabry disease",
+                    C: "Goodpasture syndrome",
+                    D: "IgA nephropathy",
+                    E: "Thin Basement Membrane Lesion"
+                },
+                correctAnswer: "A",
+                rationale: "Alport syndrome is a hereditary cause of nephritic syndrome associated with genetic mutations in collagen IV affecting the basement membrane. It typically presents with hematuria and sensorineural hearing loss (and sometimes anterior lenticonus).",
+                source: "Nephritic Syndrome PDF, slides 47 & 49: 'Primary Disorders... Hereditary • Thin Basement Membrane Lesion (4%) • Alport Syndrome (2%)' AND 'Alport syndrome with sensorineural hearing loss, anterior lenticonus'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO5: Describe the clinical presentations and diagnosis of the common causes of the nephritic syndrome.",
+                question: "A 10-year-old boy is brought to the clinic because his urine is the color of Coca-Cola. His mother reports he had a severe skin infection (impetigo) about two weeks ago. His blood pressure is 140/90 mm Hg. Laboratory studies show low C3 complement levels and elevated antistreptolysin O (ASO) antibodies. A renal biopsy, if performed, would most likely reveal which of the following on electron microscopy?",
+                options: {
+                    A: "Diffuse podocyte effacement",
+                    B: "Large hump-shaped subepithelial deposits",
+                    C: "Linear IgG deposition along the basement membrane",
+                    D: "Sausage-shaped intramembranous deposits",
+                    E: "Subendothelial deposits forming a tram-track appearance"
+                },
+                correctAnswer: "B",
+                rationale: "The presentation of acute nephritic syndrome 7-10 days after a streptococcal skin infection with low C3 and positive ASO is classic for Post-streptococcal GN. On electron microscopy, this condition is characterized by large hump-shaped subepithelial deposits.",
+                source: "Nephritic Syndrome PDF, slides 82 & 83: 'Acute Proliferative Infection-Related GN • Post streptococcal GN • Onset 7-10days after Group A Beta- hemolytic streptococcal infection of the skin or throat' AND 'EM: large hump-shaped subepithelial deposits'"
+            },
+            {
+                section: "Nephritic Syndrome",
+                fullLO: "LO5: Describe the clinical presentations and diagnosis of the common causes of the nephritic syndrome.",
+                question: "A 24-year-old Asian male presents with an episode of gross hematuria. He states this has happened before, typically occurring simultaneously with a severe sore throat (upper respiratory infection). His complement levels are normal. A biopsy is performed and immunofluorescence shows prominent staining in the mesangium. Which of the following immunoglobulins is most likely depositing in the mesangium?",
+                options: {
+                    A: "IgA",
+                    B: "IgD",
+                    C: "IgE",
+                    D: "IgG",
+                    E: "IgM"
+                },
+                correctAnswer: "A",
+                rationale: "IgA nephropathy is the most common GN worldwide, prevalent in young Asian males, and typically presents with gross hematuria concurrently with a URI (synpharyngitic). Immunofluorescence shows IgA deposits in the mesangium.",
+                source: "Nephritic Syndrome PDF, slides 88 & 89: 'IgA nephropathy • Most common GN worldwide • More common in Asians and Whites... Gross hematuria commonly occurs during or immediately following a URI or intense exercise (synpharyngitic)' AND 'IF: IgA deposits in mesangium'"
+            },
+
+            // --- Section 2: Nephrotic Syndrome ---
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO1: Describe the clinical presentation of nephrotic syndrome.",
+                question: "A 54-year-old woman presents to the clinic with severe, abrupt-onset swelling of her lower extremities. A 24-hour urine collection reveals 12 grams of protein. Which of the following secondary clinical complications is this patient at highest risk for due to the urinary loss of antithrombin III?",
+                options: {
+                    A: "Deep venous thrombosis",
+                    B: "Hyperthyroidism",
+                    C: "Iron overload",
+                    D: "Migratory arthralgias",
+                    E: "Pulmonary hemorrhage"
+                },
+                correctAnswer: "A",
+                rationale: "Nephrotic syndrome involves a loss of selectivity in the glomerular filtration barrier. The loss of antithrombin III in the urine creates a hypercoagulable state, placing the patient at high risk for thromboembolic events such as deep venous thrombosis (DVT) and renal vein thrombosis.",
+                source: "Nephrotic Syndrome PDF, slides 10 & 38: 'No selectivity means larger proteins are lost in the urine... Antithrombin III -> hypercoaguable state' AND 'Complications • Hypercoagulability (deep venous thrombosis, pulmonary embolus, renal vein thromsosis)'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO1: Describe the clinical presentation of nephrotic syndrome.",
+                question: "A 60-year-old man presents with progressive generalized edema (anasarca). Laboratory testing confirms a diagnosis of nephrotic syndrome. In addition to heavy proteinuria and edema, which of the following pairs of clinical findings is most classically associated with this syndrome?",
+                options: {
+                    A: "Hyperalbuminemia and hypolipidemia",
+                    B: "Hyperalbuminemia and macroscopic hematuria",
+                    C: "Hypoalbuminemia and hyperlipidemia",
+                    D: "Hypoalbuminemia and severe hypertension",
+                    E: "Macroscopic hematuria and RBC casts"
+                },
+                correctAnswer: "C",
+                rationale: "The classic tetrad of nephrotic syndrome consists of heavy proteinuria (>3.5 g/day ), hypoalbuminemia (<3.5 g/dL), edema, and hyperlipidemia (with lipiduria).",
+                source: "Nephrotic Syndrome PDF, slide 9: '2) Nephrotic Syndrome • Noninflammatory process • Heavy proteinuria > 3.5 g/day • Hypoalbuminemia < 3.5 g/dL • Edema • Hyperlipidemia/Hypercholesterolemia'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO2: Describe how the urinalysis, urine microscopy, and the renal biopsy is useful in the diagnosis of nephrotic syndromes.",
+                question: "A 45-year-old patient is being evaluated for new-onset lower extremity edema. A urine dipstick is strongly positive for protein. The physician orders a urine microscopy to further evaluate the sediment. Which of the following findings on urine microscopy is most consistent with a pure nephrotic syndrome?",
+                options: {
+                    A: "Dysmorphic red blood cells",
+                    B: "Fatty casts",
+                    C: "Muddy brown granular casts",
+                    D: "White blood cell casts",
+                    E: "Yeast cells"
+                },
+                correctAnswer: "B",
+                rationale: "Nephrotic syndrome typically features a \"bland\" urine sediment (lacking the active RBCs/WBCs seen in nephritic syndrome), but due to hyperlipidemia and lipiduria, fatty casts or oval fat bodies are classically seen on microscopy.",
+                source: "Nephrotic Syndrome PDF, slide 9: '2) Nephrotic Syndrome... Bland urine sediment: have fatty casts or oval fat bodies'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO2: Describe how the urinalysis, urine microscopy, and the renal biopsy is useful in the diagnosis of nephrotic syndromes.",
+                question: "A patient presents with massive proteinuria. A standard urine dipstick test is performed in the office and reads \"4+ protein.\" The physician explains that while the dipstick is highly sensitive for one specific protein, it may completely miss others (like immunoglobulins). Which of the following proteins is the primary target detected by the standard urine dipstick?",
+                options: {
+                    A: "Albumin",
+                    B: "Bence-Jones protein",
+                    C: "Fibrinogen",
+                    D: "Myoglobin",
+                    E: "Transferrin"
+                },
+                correctAnswer: "A",
+                rationale: "The routine urine dipstick primarily detects albumin. It is relatively insensitive to other proteins such as immunoglobulins or light chains, which is why a 24-hour urine or specific protein assays are sometimes needed.",
+                source: "Nephrotic Syndrome PDF, slide 8: 'Proteinuria... Urine Dipstick detects primarily albumin... Does not detect other proteins (immunoglobulins)'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO3: List the common causes of the nephrotic syndrome.",
+                question: "A 50-year-old African American man presents with newly diagnosed nephrotic syndrome and worsening renal function. He has a history of morbid obesity and obstructive sleep apnea. Based on epidemiology in the United States, which of the following is the most common idiopathic primary cause of nephrotic syndrome in African Americans?",
+                options: {
+                    A: "C1q Nephropathy",
+                    B: "Focal Segmental Glomerulosclerosis (FSGS)",
+                    C: "IgA Nephropathy",
+                    D: "Membranous Glomerulopathy",
+                    E: "Minimal Change Disease"
+                },
+                correctAnswer: "B",
+                rationale: "Focal Segmental Glomerulosclerosis (FSGS) is the most common idiopathic nephrotic syndrome in African Americans. It can be primary (often associated with the APOL-1 gene variant in this population) or secondary to conditions like obesity, sleep apnea, or HIV.",
+                source: "Nephrotic Syndrome PDF, slide 35: 'Focal Segmental Glomerulosclerosis (FSGS) • Most common idiopathic nephrotic syndrome in African Americans'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO3: List the common causes of the nephrotic syndrome.",
+                question: "A 65-year-old man with a 20-year history of poorly controlled type 2 diabetes mellitus presents with worsening edema. He is found to have heavy proteinuria. Worldwide, which of the following is the most common systemic disease causing nephrotic syndrome in adults?",
+                options: {
+                    A: "Amyloidosis",
+                    B: "Diabetic Nephropathy",
+                    C: "Hepatitis C infection",
+                    D: "Systemic Lupus Erythematosus",
+                    E: "Wegener's granulomatosis"
+                },
+                correctAnswer: "B",
+                rationale: "Diabetic nephropathy is the most common systemic cause of nephrotic syndrome in adults, and the most common cause of end-stage renal disease (ESRD) in the US and worldwide.",
+                source: "Nephrotic Syndrome PDF, slide 47: 'Diabetic Nephropathy • Most common cause of ESRD in US and worldwide • Most common systemic cause of nephrotic syndrome in adults'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO4: Describe the clinical presentations and diagnosis of the common causes of the nephrotic syndrome.",
+                question: "A 4-year-old boy develops sudden, severe swelling around his eyes and in his legs. His 24-hour urine collection shows 4.2 grams of protein. A kidney biopsy is performed. Light microscopy and immunofluorescence are completely normal. Which of the following is the most appropriate initial treatment for this patient's condition?",
+                options: {
+                    A: "ACE inhibitors only",
+                    B: "Corticosteroids",
+                    C: "Cyclophosphamide",
+                    D: "Plasmapheresis",
+                    E: "Rituximab"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has Minimal Change Disease (MCD), which is the most common cause of nephrotic syndrome in children and presents with normal LM/IF but podocyte effacement on EM. The primary and initial treatment for MCD is corticosteroids, to which patients typically show a dramatic response.",
+                source: "Nephrotic Syndrome PDF, slide 22: 'MCD: Pathologic findings • LM: normal glomeruli • IF: negative staining... • Treatment corticosteroids initially for 3 to 4 months'"
+            },
+            {
+                section: "Nephrotic Syndrome",
+                fullLO: "LO4: Describe the clinical presentations and diagnosis of the common causes of the nephrotic syndrome.",
+                question: "A 55-year-old Caucasian male presents with gradually worsening edema and a recent diagnosis of renal vein thrombosis. Serologic workup reveals the presence of anti-PLA2R antibodies. A renal biopsy demonstrates thickened glomerular capillary walls. Silver staining of the biopsy would most likely reveal which of the following characteristic structural abnormalities?",
+                options: {
+                    A: "Apple-green birefringence",
+                    B: "Crescent formation",
+                    C: "Kimmelstiel-Wilson nodules",
+                    D: "Spikes protruding from the basement membrane",
+                    E: "Tram-track double contours"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has Membranous Glomerulopathy (MGN), which is common in Caucasian males, carries a high risk for renal vein thrombosis, and is strongly associated with anti-PLA2R antibodies. The classic histologic appearance on silver stain is thickened capillary walls with \"spikes\" protruding from the glomerular basement membrane (GBM).",
+                source: "Nephrotic Syndrome PDF, slides 29 & 30: 'Membranous Glomerulopathy (MGN)... High risk for DVT including renal vein thrombosis • Primary/Idiopathic: Majority (70%) with anti-PLA2R antibodies' AND 'Membranous Glomerulopathy (MGN) • Pathology • Light – thickened capillary walls, GBM “spikes”'"
+            },
+
+            // --- Section 3: Disorders of Potassium Homeostasis ---
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO1: Describe the basics of potassium homeostasis.",
+                question: "A medical student is reviewing the total body distribution of electrolytes. She notes that maintaining a steep concentration gradient of potassium across the cell membrane is crucial for cellular function. In a healthy adult, what percentage of the total body potassium is normally sequestered within the intracellular fluid compartment?",
+                options: {
+                    A: "2%",
+                    B: "20%",
+                    C: "45%",
+                    D: "60%",
+                    E: "Greater than 98%"
+                },
+                correctAnswer: "E",
+                rationale: "Potassium is primarily an intracellular ion. Greater than 98% of total body potassium is stored inside the cells (approximately 3920 mEq), while less than 2% resides in the extracellular fluid.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 37: 'Normal Potassium Intake, Distribution, and Output From the Body... Extracellular fluid K+ 59 mEq ... Intracellular fluid K+ 3920 mEq' [Visual graphic showing >98% intracellular]"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO1: Describe the basics of potassium homeostasis.",
+                question: "A healthy 30-year-old man consumes a diet containing approximately 100 mEq of potassium per day. To maintain a steady state of potassium balance, his body must excrete an equivalent amount. Which of the following represents the primary route by which the vast majority of this daily potassium load is excreted?",
+                options: {
+                    A: "Biliary excretion",
+                    B: "Fecal excretion",
+                    C: "Insensible loss via respiration",
+                    D: "Sweat",
+                    E: "Urinary excretion"
+                },
+                correctAnswer: "E",
+                rationale: "Of the roughly 100 mEq/day of potassium ingested, the primary route of excretion is the kidney. Approximately 92 mEq/day is lost in the urine, while only 8 mEq/day is lost in the feces.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 37: 'K+ output: Urine 92 mEq/day, Feces 8 mEq/day'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO2: Describe the mechanisms responsible for hypo and hyperkalemia.",
+                question: "A 22-year-old woman with type 1 diabetes presents in a state of severe diabetic ketoacidosis. Her laboratory results show severe hyperglycemia and hyperosmolarity. This hyperosmolar state directly contributes to hyperkalemia through which of the following mechanisms?",
+                options: {
+                    A: "Destruction of the juxtaglomerular apparatus",
+                    B: "Induction of water movement out of the cell, increasing intracellular K+ and inhibiting the Na/K ATPase",
+                    C: "Massive cellular lysis destroying the cell membranes",
+                    D: "Stimulation of aldosterone synthesis",
+                    E: "Upregulation of ENaC channels in the collecting duct"
+                },
+                correctAnswer: "B",
+                rationale: "In hyperosmolar states like DKA, the high extracellular osmolarity draws water out of the cells. This solvent drag pulls some K+ out, but it also concentrates the remaining intracellular K+, which exerts feedback inhibition on the Na/K ATPase pump, further preventing K+ from entering the cell and leading to hyperkalemia.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 66: 'Hyperosmolarity induces water movement out of the cell and increases IC[K] – this has a feedback inhibition on the Na/K ATPase pump.'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO2: Describe the mechanisms responsible for hypo and hyperkalemia.",
+                question: "A patient presents with severe hyperkalemia following a crush injury. Under normal physiological conditions, the hormone aldosterone acts to prevent potassium buildup. When aldosterone binds to its intracellular receptor in the principal cells of the collecting duct, it promotes potassium excretion primarily by stimulating the synthesis of which of the following?",
+                options: {
+                    A: "Apical epithelial sodium channels (ENaC)",
+                    B: "Basolateral aquaporin channels",
+                    C: "Glomerular basement membrane collagen",
+                    D: "Renin granules",
+                    E: "Vitamin D hydroxylase"
+                },
+                correctAnswer: "A",
+                rationale: "Aldosterone binds to the mineralocorticoid receptor in principal cells, which initiates protein synthesis of apical ENaC channels. The increased uptake of sodium through ENaC creates a lumen-negative potential that strongly drives the secretion of potassium out of the cell into the tubular lumen.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 15: '[Diagram showing Aldosterone binding Receptor leading to increased ENaC and basolateral Na/K ATPase]'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO3: Identify common causes of hypo and hyperkalemia.",
+                question: "A 78-year-old man with congestive heart failure and stage 3 chronic kidney disease presents with respiratory distress. His medications include furosemide, spironolactone, and enalapril. His laboratory studies reveal a serum potassium of 6.2 mEq/L. Which of the following correctly identifies the mechanism by which enalapril directly contributes to his hyperkalemia?",
+                options: {
+                    A: "Blocks the apical epithelial Na channel",
+                    B: "Blocks the mineralocorticoid receptor",
+                    C: "Inhibits the conversion of Angiotensin I to Angiotensin II",
+                    D: "Inhibits renin release from the macula densa",
+                    E: "Promotes massive cellular lysis"
+                },
+                correctAnswer: "C",
+                rationale: "Enalapril is an ACE inhibitor. ACE inhibitors block the angiotensin-converting enzyme, thereby inhibiting the conversion of Angiotensin I to Angiotensin II. This lack of Angiotensin II leads to decreased aldosterone release, impairing renal potassium excretion and causing hyperkalemia.",
+                source: "Disorders of Potassium Homeostasis PDF, slides 11-12: 'Enalapril causes hyperkalemia by what mechanism? ... 3. inhibits conversion of AI to AII'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO3: Identify common causes of hypo and hyperkalemia.",
+                question: "A 38-year-old woman presents for evaluation of persistent hypertension. She is not taking any medications currently, but her serum potassium is notably low at 2.9 mEq/L. Calculation of her transtubular potassium gradient (TTKG) yields a value of 7, indicating inappropriate renal potassium wasting. Which of the following is the most likely cause of this patient's hypokalemia and hypertension?",
+                options: {
+                    A: "Bartter syndrome",
+                    B: "Chronic diarrhea",
+                    C: "Gitelman syndrome",
+                    D: "Primary hyperaldosteronism",
+                    E: "Surreptitious diuretic use"
+                },
+                correctAnswer: "D",
+                rationale: "A high TTKG (> 4-6) in the setting of hypokalemia indicates the kidney is inappropriately wasting potassium. When combined with hypertension, the main causes are primary hyperaldosteronism (Conn's syndrome), secondary hyperaldosteronism, or apparent mineralocorticoid excess. Bartter and Gitelman syndromes feature normal or low blood pressure.",
+                source: "Disorders of Potassium Homeostasis PDF, slides 97 & 114: 'Hypokalemia • Normal BP • Hypertension present – 3 main causes o Primary hyperaldosteronism (Conn’s syndrome)' AND 'Diagnosed with primary hyperaldosteronism'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO4: Discuss the clinical manifestations of hypo and hyperkalemia.",
+                question: "A 67-year-old man is brought to the emergency department after a suicide attempt via ingestion of a large quantity of potassium chloride elixir. On physical examination, he has severe, diffuse muscle weakness and is hyporeflexic. Which of the following best explains the electrophysiological basis for his muscle weakness in the setting of severe hyperkalemia?",
+                options: {
+                    A: "Decreased magnitude of the resting membrane potential makes the cell continuously depolarized and unexcitable",
+                    B: "Increased magnitude of the resting membrane potential hyperpolarizes the membrane",
+                    C: "Massive influx of calcium prevents muscular relaxation",
+                    D: "Rapid depletion of intracellular ATP stores",
+                    E: "Total blockade of acetylcholine release at the neuromuscular junction"
+                },
+                correctAnswer: "A",
+                rationale: "Hyperkalemia decreases the magnitude of the resting membrane potential (makes it less negative, moving it closer to zero). Initially, this makes the cell more excitable, but severe advanced hyperkalemia causes delayed depolarization (slower rise in Na influx) because the sustained partial depolarization inactivates sodium channels, leading to weakness and hyporeflexia.",
+                source: "Disorders of Potassium Homeostasis PDF, slides 42 & 44: 'Cardiovascular manifestations of hyperkalemia: • Decreased magnitude of RMP – more excitable' AND 'Cardiovascular manifestations of more advanced hyperkalemia; Reflect delayed depolarization (slower rise in Na influx)'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO4: Discuss the clinical manifestations of hypo and hyperkalemia.",
+                question: "A 34-year-old woman presents to the emergency room with severe abdominal pain and vomiting. Her serum potassium is 3.0 mEq/L. The physician notes that her cardiovascular system is at risk due to the effects of hypokalemia on the resting membrane potential. Hypokalemia alters the cell membrane in which of the following ways?",
+                options: {
+                    A: "Decreases the magnitude of the resting membrane potential",
+                    B: "Hyperpolarizes the membrane, making the cell less responsive",
+                    C: "Induces a massive influx of sodium during the resting phase",
+                    D: "Prevents the opening of potassium leak channels",
+                    E: "Triggers spontaneous action potentials at a rapid rate"
+                },
+                correctAnswer: "B",
+                rationale: "In hypokalemia, the ratio of intracellular to extracellular potassium increases, which causes a larger efflux of potassium at rest. This increases the magnitude of the resting membrane potential (makes it more negative), hyperpolarizing the cell and making it less responsive to stimuli.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 89: 'Hypokalemia Clinical manifestations – cardiovascular • Increased magnitude of RMP - hyperpolarizes the membrane and cell is less responsive'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO5: Describe the effects of hypo and hyperkalemia on the electrocardiogram.",
+                question: "A patient with end-stage renal disease misses a scheduled dialysis appointment and presents with a serum potassium of 7.2 mEq/L. An electrocardiogram (ECG) is obtained immediately. Which of the following is the earliest and most classic ECG manifestation of hyperkalemia due to more rapid ventricular repolarization?",
+                options: {
+                    A: "Flattened T waves",
+                    B: "Peaked, narrow T waves",
+                    C: "Prominent U waves",
+                    D: "ST segment depression",
+                    E: "Widened QRS complex"
+                },
+                correctAnswer: "B",
+                rationale: "The earliest ECG sign of hyperkalemia is peaked, narrow T waves, which reflects the more rapid repolarization of the ventricles caused by the increased potassium permeability. As hyperkalemia advances, the QRS widens, eventually leading to a sine wave pattern.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 43: 'Cardiovascular manifestations of hyperkalemia... ECG • Peaked narrow T waves (reflect rapid repolarization)'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO5: Describe the effects of hypo and hyperkalemia on the electrocardiogram.",
+                question: "A 45-year-old woman on chronic thiazide diuretic therapy presents with severe fatigue. Laboratory testing reveals a serum potassium level of 2.5 mEq/L. An ECG is performed. Because hypokalemia reduces potassium permeability and delays ventricular repolarization, which of the following findings is most likely to be seen on her ECG?",
+                options: {
+                    A: "Increased amplitude of the P wave",
+                    B: "Peaked T waves",
+                    C: "Prominent U wave",
+                    D: "Shortened PR interval",
+                    E: "Shortened QT interval"
+                },
+                correctAnswer: "C",
+                rationale: "Hypokalemia causes delayed ventricular repolarization because it reduces potassium permeability. The classic ECG manifestations include ST segment depression, decreased amplitude of the T wave, and a prominent U wave (representing Purkinje fiber repolarization).",
+                source: "Disorders of Potassium Homeostasis PDF, slide 90: 'Hypokalemia... ECG changes mainly due to delayed ventricular repolarization... ST segment depression, Decreased amplitude of T wave, *Prominent U wave (Purkinje fiber repolarization)'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO6: Describe the management of hypo and hyperkalemia.",
+                question: "A patient in the emergency department has a serum potassium of 8.1 mEq/L and widened QRS complexes on his ECG. The physician immediately orders intravenous calcium gluconate. What is the primary mechanism of action of calcium gluconate in the emergency treatment of severe hyperkalemia?",
+                options: {
+                    A: "Antagonizes the cardiac conduction abnormalities",
+                    B: "Binds potassium in the gastrointestinal tract",
+                    C: "Increases renal excretion of potassium",
+                    D: "Inhibits aldosterone synthase",
+                    E: "Shifts potassium rapidly into the cells"
+                },
+                correctAnswer: "A",
+                rationale: "Calcium gluconate is given in severe hyperkalemia with ECG changes because it immediately antagonizes the cardiac conduction abnormalities (stabilizes the myocardium). It does not shift potassium into cells or change the plasma K level.",
+                source: "Disorders of Potassium Homeostasis PDF, slides 49 & 55: 'How does calcium gluconate treat hyperkalemia? ... 3. antagonizes the cardiac conduction abnormalities' AND 'Calcium • Antagonizes cardiac conduction abnormalities • Immediate effect • No change in plasma K'"
+            },
+            {
+                section: "Disorders of Potassium Homeostasis",
+                fullLO: "LO6: Describe the management of hypo and hyperkalemia.",
+                question: "A patient requires rapid lowering of a dangerously high serum potassium level. While preparing for dialysis, the physician orders an intravenous infusion of regular insulin. To prevent a severe adverse drug effect, the insulin must be administered concurrently with which of the following?",
+                options: {
+                    A: "Calcium chloride",
+                    B: "Dextrose (Glucose)",
+                    C: "Epinephrine",
+                    D: "Sodium bicarbonate",
+                    E: "Sodium polystyrene sulfonate"
+                },
+                correctAnswer: "B",
+                rationale: "Insulin is used to shift potassium into the cells, lowering plasma K levels rapidly. Because administering insulin alone would cause severe hypoglycemia, it must be administered with glucose.",
+                source: "Disorders of Potassium Homeostasis PDF, slide 55: 'Insulin • Shifts K into cells... • Give with glucose'"
+            },
+
+            // --- Section 4: Acid-Base Disorders and Clinical Correlations ---
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO1: Explain how the Henderson-Hasselbalch equation established a mathematical relation between pH, PCO2, and HCO3.",
+                question: "A medical student is evaluating an arterial blood gas (ABG) report. To ensure the laboratory machine is functioning correctly and the data are internally consistent, the student uses the modified Henderson equation to estimate the hydrogen ion concentration [H+]. If the patient's pCO2 is 40 mm Hg and the HCO3- is 24 mEq/L, which of the following represents the approximate calculated [H+] in nmol/L?",
+                options: {
+                    A: "16",
+                    B: "24",
+                    C: "40",
+                    D: "60",
+                    E: "80"
+                },
+                correctAnswer: "C",
+                rationale: "The modified Henderson equation is H+ = 24 x (pCO2 / HCO3-). Using the given values: H+ = 24 x (40 / 24) = 40 nmol/L. A [H+] of 40 nmol/L corresponds perfectly to the normal physiological pH of 7.40.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 5: 'Modified Henderson equation: H+ = 24 x pCO2 / HCO3- [40 nm] = 24 x 40 mmHg / 24 meq/L Used to estimate [H+] Checks validity of ABG'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO1: Explain how the Henderson-Hasselbalch equation established a mathematical relation between pH, PCO2, and HCO3.",
+                question: "A physician reviews a patient's ABG results: pH 7.31, pCO2 56 mm Hg, and HCO3- 28 mEq/L. Using the modified Henderson equation, the calculated [H+] is 48 nmol/L. Knowing that a normal [H+] of 40 nmol/L corresponds to a pH of 7.40, and that an increase of 1 nmol/L of H+ drops the pH by 0.01, what should the estimated pH be to confirm the data is internally consistent?",
+                options: {
+                    A: "7.32",
+                    B: "7.38",
+                    C: "7.42",
+                    D: "7.48",
+                    E: "7.50"
+                },
+                correctAnswer: "A",
+                rationale: "The H+ increased from the normal 40 to 48 (an increase of 8 nmol/L). Because every 1 nmol/L increase in H+ drops the pH by 0.01, the pH should drop by 0.08. 7.40 - 0.08 = 7.32. This closely matches the reported pH of 7.31, proving internal consistency.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slides 20 & 27: '-For any [up arrow] in H+ by 1 nmol/L pH[down arrow] by 0.01...[H+] has increased by 8 nEq/L -> this corresponds to a decrease in pH of 0.08. pH ~ 7.4 - 0.08 = 7.32'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO2: Recall the four primary acid-base disorders.",
+                question: "A 25-year-old man presents with a 4-day history of severe, unrelenting diarrhea. Arterial blood gas testing reveals a pH of 7.20. Which of the following primary changes in his serum chemistry defines his specific primary acid-base disorder?",
+                options: {
+                    A: "Decreased HCO3-",
+                    B: "Decreased pCO2",
+                    C: "Increased HCO3-",
+                    D: "Increased pCO2",
+                    E: "Increased pO2"
+                },
+                correctAnswer: "A",
+                rationale: "The patient has a low pH (<7.40), indicating acidemia. The primary change causing metabolic acidosis is a decrease in HCO3- (due to loss of base in the stool).",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 6: 'Primary Acid-Base Disturbances... Metabolic acidosis | pH < 7.40 | Primary change: [down arrow] HCO3-'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO2: Recall the four primary acid-base disorders.",
+                question: "A teenager is brought to the emergency department during a severe panic attack. She is visibly hyperventilating. An arterial blood gas shows a pH of 7.55. Based on the primary acid-base disturbances, this patient's alkalemia is directly driven by which of the following primary changes?",
+                options: {
+                    A: "Decreased HCO3-",
+                    B: "Decreased pCO2",
+                    C: "Increased HCO3-",
+                    D: "Increased pCO2",
+                    E: "Increased pO2"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has a high pH (>7.40), indicating alkalemia. Hyperventilation blows off carbon dioxide, resulting in a primary decrease in pCO2. This defines respiratory alkalosis.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 6: 'Primary Acid-Base Disturbances... Respiratory alkalosis | pH > 7.40 | Primary change: [down arrow] PCO2'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO3: Identify common causes of the four primary acidbase disorders.",
+                question: "A 50-year-old man is found unresponsive with an empty bottle of antifreeze nearby. Laboratory testing confirms severe metabolic acidosis. The physician calculates a high anion gap. Which of the following specific substances in the antifreeze is most likely responsible for generating this high anion gap acidosis?",
+                options: {
+                    A: "Ethylene glycol",
+                    B: "Isopropyl alcohol",
+                    C: "Oxoproline",
+                    D: "Propylene glycol",
+                    E: "Salicylate"
+                },
+                correctAnswer: "A",
+                rationale: "Antifreeze commonly contains ethylene glycol, which metabolizes into toxic organic acids, consuming bicarbonate and creating a high anion gap metabolic acidosis. In the GOLDMARK mnemonic, 'G' stands for Glycols (ethylene and propylene).",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 12: 'High Anion Gap: GOLDMARK • G – Glycols (ethylene and propylene) • O – Oxoproline... M - Methanol'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO3: Identify common causes of the four primary acidbase disorders.",
+                question: "A 40-year-old woman receives a massive infusion of normal saline (0.9% NaCl) during a lengthy surgical procedure. Postoperatively, her arterial blood gas shows a pH of 7.30 and a normal anion gap. Which of the following best describes the specific etiology of her normal anion gap metabolic acidosis?",
+                options: {
+                    A: "Chloride intoxication (Dilutional acidosis)",
+                    B: "Diabetic ketoacidosis",
+                    C: "Ethylene glycol toxicity",
+                    D: "Lactic acidosis",
+                    E: "Uremia"
+                },
+                correctAnswer: "A",
+                rationale: "Massive infusions of normal saline provide an excessive chloride load without bicarbonate, leading to a hyperchloremic, normal anion gap metabolic acidosis (Chloride intoxication/Dilutional acidosis). The other options listed cause a high anion gap metabolic acidosis.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 13: 'Non Gap Metabolic Acidosis... Chloride intoxication Dilutional acidosis... HCl intoxication'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO4: Develop a system for solving acid-base disorders.",
+                question: "A physician is teaching residents a systematic approach to solving acid-base disorders. After determining the primary disorder based on the pH and pCO2/HCO3- relationship, what is the crucial next step required when evaluating any patient with a metabolic acidosis?",
+                options: {
+                    A: "Administer intravenous sodium bicarbonate immediately.",
+                    B: "Calculate the anion gap.",
+                    C: "Calculate the osmolal gap.",
+                    D: "Measure the urinary anion gap.",
+                    E: "Obtain a psychiatric consultation."
+                },
+                correctAnswer: "B",
+                rationale: "In the systematic steps for acid-base disorders, after checking validity and identifying the primary disorder, the next step (especially for metabolic acidosis) is to calculate the anion gap to differentiate between gap and non-gap causes.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 19: 'Steps in Acid-Base Disorders • Check the validity of the data • Identify the primary disorder • Calculate the anion gap'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO4: Develop a system for solving acid-base disorders.",
+                question: "A patient's laboratory values are as follows: Na+ 140 mEq/L, Cl- 105 mEq/L, and HCO3- 15 mEq/L. Using the standard formula, what is this patient's calculated anion gap?",
+                options: {
+                    A: "10 mEq/L",
+                    B: "15 mEq/L",
+                    C: "20 mEq/L",
+                    D: "25 mEq/L",
+                    E: "30 mEq/L"
+                },
+                correctAnswer: "C",
+                rationale: "The Anion Gap is calculated using the formula: Na - (Cl + HCO3). In this case: 140 - (105 + 15) = 140 - 120 = 20 mEq/L.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 9: 'Metabolic Acidosis Anion Gap = Na – (Cl + HCO3)'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO5: Be able to identify mixed acid-base disorders.",
+                question: "A 68-year-old woman with chronic obstructive pulmonary disease (COPD) and chronic renal failure presents to the hospital. Her ABG reveals pH 7.1, pCO2 50 mm Hg, and HCO3- 15 mEq/L. The physician notes that the expected pCO2 for a pure metabolic acidosis with an HCO3- of 15 should be roughly 30 mm Hg. Because the actual pCO2 is 50 mm Hg, what does this indicate about her acid-base status?",
+                options: {
+                    A: "She has a fully compensated normal anion gap metabolic acidosis.",
+                    B: "She has a pure respiratory alkalosis.",
+                    C: "She has a pure, uncompensated metabolic alkalosis.",
+                    D: "She has a mixed metabolic acidosis and respiratory acidosis.",
+                    E: "The data are internally inconsistent and must be redrawn."
+                },
+                correctAnswer: "D",
+                rationale: "If the patient has a metabolic acidosis, the lungs should compensate by hyperventilating to lower the pCO2 (expected ~ 30). Because the pCO2 is actually elevated at 50, she has concurrent respiratory failure. The presence of two primary processes acting in the same pH direction (or opposing without proper compensation) indicates a mixed disorder: metabolic acidosis (renal failure) + respiratory acidosis (COPD).",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 47: 'Answer • pCO2 =1.5 x HCO3- + 8 = 1.5 x 10 + 8 = 23 • pCO2 is 40 not 23 telling you there is a respiratory acidosis present. • Mixed metabolic acidosis and respiratory acidosis' (Note: Principle applied to vignette numbers)"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO5: Be able to identify mixed acid-base disorders.",
+                question: "A 58-year-old man presents with severe diabetic ketoacidosis. His anion gap is 32 mEq/L (normal is 12 mEq/L). His serum HCO3- is 18 mEq/L (normal is 24 mEq/L). By calculating the delta gap (the change in anion gap versus the change in HCO3-), the physician uncovers a \"hidden\" secondary disorder. Which of the following mixed disorders does this patient have?",
+                options: {
+                    A: "Pure high anion gap metabolic acidosis",
+                    B: "High anion gap metabolic acidosis and metabolic alkalosis",
+                    C: "High anion gap metabolic acidosis and normal anion gap metabolic acidosis",
+                    D: "Pure metabolic alkalosis",
+                    E: "Pure respiratory acidosis"
+                },
+                correctAnswer: "B",
+                rationale: "The delta gap concept states that for every 1 point increase in the anion gap, the HCO3- should drop by 1 point. Here, the anion gap increased by 20 (32-12=20). The HCO3- should have dropped by 20 (from 24 down to 4). However, the HCO3- only dropped by 6 (to 18). Because the drop in HCO3- is much less than the rise in the anion gap, there must be a concurrent process adding bicarbonate to the blood, which is a metabolic alkalosis.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slides 16 & 52: '-If the [up triangle] Anion gap is > than the[up triangle] HCO3 there is an additional METABOLIC ALKALOSIS' and '• ∆ anion gap = 32 – 12 = 20 • ∆ HCO3- = 24 – 18 = 6 • The change in anion gap is much greater than the change in HCO3-, telling you there is a metabolic alkalosis as well.'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO6: Explain the utility of the osmolal gap, urinary anion gap, and the delta gap.",
+                question: "A patient presents with altered mental status and a severe high anion gap metabolic acidosis. The physician suspects toxic alcohol ingestion. Which of the following calculations should ALWAYS be performed in the setting of a high anion gap metabolic acidosis to help confirm the presence of unmeasured alcohols like methanol or ethylene glycol?",
+                options: {
+                    A: "Delta-delta gap",
+                    B: "Fractional excretion of sodium",
+                    C: "Osmolal gap",
+                    D: "Transtubular potassium gradient",
+                    E: "Urinary anion gap"
+                },
+                correctAnswer: "C",
+                rationale: "The osmolal gap (the difference between measured and calculated serum osmolality) should always be calculated for any high anion gap metabolic acidosis. A gap > 10 suggests toxic alcohol poisoning, such as methanol or ethylene glycol, which generate unmeasured osmotically active particles.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slide 10: 'Osmolal Gap • ALWAYS calculate osmolal Gap for any high anion gap metabolic acidosis... Osmolal Gap > 10 suggests toxic alcohol poisoning – Methanol, Ethylene Glycol -> HAGMA'"
+            },
+            {
+                section: "Acid-Base Disorders and Clinical Correlations",
+                fullLO: "LO6: Explain the utility of the osmolal gap, urinary anion gap, and the delta gap.",
+                question: "A 30-year-old woman presents with a normal anion gap metabolic acidosis. The differential diagnosis primarily includes severe diarrhea (gastrointestinal loss of bicarbonate) or a renal tubular acidosis (RTA). To differentiate between these two specific etiologies, which of the following tests is most clinically useful?",
+                options: {
+                    A: "Delta gap",
+                    B: "Osmolal gap",
+                    C: "Serum albumin level",
+                    D: "Urine specific gravity",
+                    E: "Urinary anion gap"
+                },
+                correctAnswer: "E",
+                rationale: "The Urinary Anion Gap (UAG) is used specifically to evaluate the cause of a normal anion gap metabolic acidosis. A positive UAG points to Renal Tubular Acidosis (RTA), whereas a negative UAG (NeGUTive) points to gastrointestinal losses like diarrhea.",
+                source: "Acid-Base Disorders and Clinical Correlations PDF, slides 21 & 14: 'Other “gaps” – UAG is used in evaluating a normal anion gap metabolic acidosis.' AND 'Urinary Anion Gap... UAG Positive in RTA UAG NeGUTive in GI'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Regulation of Acid-Base")) btnText = "Regulation of Acid-Base";
+                    if (btnText.includes("Control Micturition & Diuretics")) btnText = "Control Micturition & Diuretics";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
