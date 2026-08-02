@@ -1394,7 +1394,7 @@ function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); 
 const sections = [];
 quizData.forEach(q => { if (!sections.includes(q.section)) sections.push(q.section); });
 function shortLabel(name) {
-    const map = {};
+    const map = {"Disorders of Potassium Homeostasis":"Potassium Homeostasis","Acid-Base Disorders and Clinical Correlations":"Acid-Base Disorders"};
     return map[name] || name;
 }
 window.__bbShortLabel = shortLabel;
